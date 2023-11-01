@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/spf13/viper"
 	"home_chief/internal/bot"
+	"home_chief/internal/service"
 	"log"
 )
 
@@ -21,8 +22,8 @@ func runBot() error {
 		panic(err)
 	}
 	token := viper.GetString("BOT_TOKEN")
-
-	b := bot.NewBot(token, nil)
+	srv := new(service.BotService)
+	b := bot.NewBot(token, srv)
 	err = b.Run()
 	if err != nil {
 		return err

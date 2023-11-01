@@ -81,7 +81,6 @@ func (b *Bot) handleCommand(message *tgbotapi.Message) (*tgbotapi.MessageConfig,
 		if err != nil {
 			return nil, err
 		}
-		delete(b.chatContext, message.Chat.ID)
 	}
 	switch strings.ToLower(strings.TrimSpace(message.Text)) {
 	case cmdStart:
@@ -109,12 +108,14 @@ func (b *Bot) handleChatCtx(chatCtx string, message *tgbotapi.Message) (string, 
 		text := strings.TrimSpace(message.Text)
 		val, err := strconv.Atoi(text)
 		if err != nil {
+			b.chatContext[message.Chat.ID] = cmdStart
 			return "Введите число. Например, 10", nil
 		}
 		_, err = b.srv.ChangeDate(val, message.From.ID)
 		if err != nil {
 			return "", err
 		}
+		delete(b.chatContext, message.Chat.ID)
 		return "Дата успешно добавлена. Чтобы обновить дату, напишите /start", nil
 	}
 	return "impossible!!!", nil
