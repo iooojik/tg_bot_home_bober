@@ -5,6 +5,7 @@ import (
 	tgbotapi "github.com/Syfaro/telegram-bot-api"
 	"github.com/spf13/viper"
 	"log"
+	"log/slog"
 	"strconv"
 	"strings"
 )
@@ -42,7 +43,7 @@ func (b *Bot) Run() error {
 		return err
 	}
 	bot.Debug = b.debug
-	log.Printf("Authorized on account %s", bot.Self.UserName)
+	slog.Info(fmt.Sprintf("Authorized on account %s", bot.Self.UserName))
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 	updates, err := bot.GetUpdatesChan(u)
@@ -57,11 +58,12 @@ func (b *Bot) Run() error {
 		log.Printf("[%v][%v] %s", message.From.ID, message.From.UserName, message.Text)
 		msg, err := b.handleCommand(message)
 		if err != nil {
-			log.Println(err.Error())
+			slog.Error(err.Error())
+			continue
 		}
 		_, err = bot.Send(msg)
 		if err != nil {
-			log.Println(err.Error())
+			slog.Error(err.Error())
 		}
 	}
 	return nil

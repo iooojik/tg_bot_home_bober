@@ -1,0 +1,29 @@
+version: "3.3"
+
+services:
+  db:
+    image: mysql:latest
+    restart: "on-failure"
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    env_file:
+      - .env.local
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD="yes"
+      - MYSQL_USER=bot_root
+      - MYSQL_DATABASE=bot
+      - MYSQL_PASSWORD=bot_pass
+    networks:
+      local:
+        aliases:
+          - db
+    volumes:
+      - db:/var/lib/mysql
+volumes:
+  db:
+networks:
+  local:

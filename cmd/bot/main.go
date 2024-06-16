@@ -19,15 +19,17 @@ func runBot() error {
 	viper.SetConfigType("env")
 	err := viper.ReadInConfig()
 	if err != nil {
-		panic(err)
+		return err
 	}
 	token := viper.GetString("BOT_TOKEN")
-	srv := new(service.BotService)
+	srv, err := service.NewBotService()
+	if err != nil {
+		panic(err)
+	}
 	b := bot.NewBot(token, srv)
 	err = b.Run()
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
